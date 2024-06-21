@@ -1,26 +1,22 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { ThemeProvider } from "styled-components";
+import { darkTheme, lightTheme } from "./styles/theme";
+import { GlobalStyle } from "./styles/globalStyle";
+import { ThemeModeProvider, useTheme } from "./context/themeCtx";
+import Temp from "./Temp";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const { isDark } = useTheme();
+
+    return (
+        <ThemeModeProvider>
+            <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
+                <GlobalStyle />
+                <div className="App">
+                    <Temp />
+                </div>
+            </ThemeProvider>
+        </ThemeModeProvider>
+    );
 }
 
 export default App;
