@@ -6,6 +6,7 @@ export const lightTheme: DefaultTheme = {
         text: "#222",
         primary: "#64FFC8",
         sub: "#FFC8C8",
+        darkgray: "#444",
     },
     border: {
         base: "1.5px solid #222;",
@@ -41,6 +42,7 @@ export const darkTheme: DefaultTheme = {
         text: "#fff",
         primary: "#64FFC8",
         sub: "#FFC8C8",
+        darkgray: "#444",
     },
     border: {
         base: "1.5px solid #fff;",

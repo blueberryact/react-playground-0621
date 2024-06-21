@@ -7,6 +7,7 @@ declare module "styled-components" {
             bg: "#fff" | "#222";
             primary: "#64FFC8";
             sub: "#FFC8C8";
+            darkgray: "#444";
         };
         border: {
             base: "1.5px solid #fff;" | "1.5px solid #222;" | string;

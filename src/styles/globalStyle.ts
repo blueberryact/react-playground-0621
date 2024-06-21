@@ -5,7 +5,13 @@ import { media } from "./theme";
 export const GlobalStyle = createGlobalStyle`
     ${reset}             
 
-    a{
+    * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+    }
+
+    a {
         padding: 0;
         margin: 0;
         text-decoration: none;
@@ -39,6 +45,14 @@ export const GlobalStyle = createGlobalStyle`
             cursor: default;
             fill: #f2f3f4;
         }
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: sans-serif;
+        color: ${(props) => props.theme.color.text};
+        background-color: ${(props) => props.theme.color.bg};
     }
 
     .pc-tablet-only {
