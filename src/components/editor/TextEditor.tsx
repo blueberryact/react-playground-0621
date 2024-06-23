@@ -1,8 +1,10 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import Editor from "./Editor";
 import EditorContainer from "./EditorContainer";
 import styled from "styled-components";
 import { useTheme } from "../../context/themeCtx";
+import { useUI } from "../../context/uiCtx";
+import { useData } from "../../context/dataCtx";
 
 const Btn = styled.button`
     position: absolute;
@@ -23,6 +25,16 @@ const Btn = styled.button`
     }
     &:active {
         opacity: 0.3;
+    }
+`;
+
+const TabBtn = styled(Btn)`
+    left: 1rem;
+    background-color: ${({ theme }) => theme.color.darkgray};
+    color: ${({ theme }) => theme.color.primary};
+
+    &:hover {
+        box-shadow: ${({ theme }) => theme.boxShadow.strong};
     }
 `;
 
@@ -52,7 +64,7 @@ const DeleteBtn = styled(Btn)`
 `;
 
 const ThemeBtn = styled(Btn)`
-    left: 1rem;
+    left: 14rem;
     background-color: ${({ theme }) => theme.color.text};
     color: ${({ theme }) => theme.color.bg};
     &:hover {
@@ -62,6 +74,16 @@ const ThemeBtn = styled(Btn)`
 
 const TextEditor = () => {
     const { isDark, toggleTheme } = useTheme();
+    const { toggleTabConfig } = useUI();
+    const {
+        createMemo,
+        updateMemo,
+        deleteMemo,
+        currentTabId,
+        currentMemoId,
+        data,
+        unsetMemoId,
+    } = useData();
     const editorRef = useRef<HTMLTextAreaElement>(null);
 
     const onClickReset = () => {
@@ -71,15 +93,71 @@ const TextEditor = () => {
         }
     };
 
+    const onClickCreate = () => {
+        if (editorRef.current && currentTabId) {
+            const { value } = editorRef.current;
+
+            if (value === "") return;
+
+            createMemo(value);
+            editorRef.current.value = "";
+        }
+    };
+
+    const onClickUpdate = () => {
+        if (editorRef.current && currentTabId && currentMemoId) {
+            const { value } = editorRef.current;
+
+            if (value === "") return;
+
+            updateMemo(currentMemoId, value);
+            editorRef.current.value = "";
+        }
+    };
+
+    const onClickDelete = () => {
+        if (currentTabId && currentMemoId) {
+            const targetId = currentMemoId;
+            unsetMemoId();
+            deleteMemo(targetId);
+        }
+    };
+
+    useEffect(() => {
+        if (editorRef.current) {
+            const currentTab = data.find(({ id }) => id === currentTabId);
+            const currentMemo = currentTab?.data?.find(
+                ({ id }) => id === currentMemoId
+            );
+
+            if (currentMemo?.content) {
+                editorRef.current.value = currentMemo.content;
+            } else {
+                editorRef.current.value = "";
+            }
+        }
+    }, [currentMemoId, currentTabId, data]);
+
     return (
         <EditorContainer>
+            <TabBtn onClick={toggleTabConfig}>탭</TabBtn>
             <ThemeBtn onClick={toggleTheme}>
                 {isDark ? "라이트 모드" : "다크 모드"}
             </ThemeBtn>
-            <DeleteBtn>삭제하기</DeleteBtn>
-            <ResetBtn onClick={onClickReset}>초기화하기</ResetBtn>
-            <SaveBtn>저장하기</SaveBtn>
-            <Editor ref={editorRef} />
+            {currentTabId ? (
+                <>
+                    <DeleteBtn onClick={onClickDelete}>삭제하기</DeleteBtn>
+                    <ResetBtn onClick={onClickReset}>초기화하기</ResetBtn>
+                    <SaveBtn
+                        onClick={() => {
+                            !currentMemoId ? onClickCreate() : onClickUpdate();
+                        }}
+                    >
+                        저장하기
+                    </SaveBtn>
+                    <Editor ref={editorRef} />
+                </>
+            ) : undefined}
         </EditorContainer>
     );
 };

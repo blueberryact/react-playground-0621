@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useData } from "../../context/dataCtx";
 
 const Tab = styled.li<ITabProps>`
     width: 100%;
@@ -24,6 +25,10 @@ const Tab = styled.li<ITabProps>`
 `;
 
 const Heading = styled.h3<ITabProps>`
+    overflow: hidden;
+    width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     font-weight: ${({ theme, $isActive }) =>
         $isActive ? theme.font.bold : theme.font.light};
 `;
@@ -45,17 +50,37 @@ interface IFirstDepthTabProps {
     id: number;
     createdAt: string;
     updatedAt: string;
+    type: "tab" | "memo";
 }
 
 const FirstDepthTab = ({
-    createdAt,
     id,
     isActive,
     label,
     updatedAt,
+    type,
 }: IFirstDepthTabProps) => {
+    const {
+        setTabId,
+        unsetTabId,
+        currentTabId,
+        setMemoId,
+        unsetMemoId,
+        currentMemoId,
+    } = useData();
+
     return (
-        <Tab $isActive={isActive}>
+        <Tab
+            $isActive={isActive}
+            onClick={() => {
+                if (type === "tab") {
+                    id === currentTabId ? unsetTabId() : setTabId(id);
+                    unsetMemoId();
+                } else {
+                    id === currentMemoId ? unsetMemoId() : setMemoId(id);
+                }
+            }}
+        >
             <Heading $isActive={isActive}>{label}</Heading>
             <UpdatedAt>Updated At, {updatedAt}</UpdatedAt>
         </Tab>

@@ -35,3 +35,12 @@ export const sinkDown = keyframes`
         transform: translateY(2rem);
     }
 `;
+
+export const slideIn = keyframes`
+    from {
+        transform: translateX(-9rem);
+    }
+    to {
+        transform: translateX(1rem);
+    }
+`;
